@@ -17,7 +17,7 @@ def getSongList(g):
 		#returns duration in milliseconds to sync songs. 
 		if t.duration <= 240000:
 			username = t.user['username']
-			new_track = {'id':t.id,'title':t.title, 'creator_user':username,'track_permalink':t.permalink_url,'stream_url':"",'artwork':t.artwork_url, 'duration':t.duration,'start_time':''}
+			new_track = {'id':t.id,'title':t.title, 'creator_user':username,'track_permalink':t.permalink_url,'stream_url':"",'artwork':t.artwork_url, 'duration':t.duration,'start_time':'','chosen_by':None}
 			trackList.append(new_track)
 	# for x in range(0,4):
 	# 	trackList[x]['stream_url'] = getSongURLLocation(trackList[x]['id'])

@@ -60,3 +60,16 @@ PROFILE_UPDATE = "update profile"
 #When profile has been updated it will emit this message 
 #The event contains the member object with updates
 PROFILE_UPDATED = "profile updated"
+
+#When user selects a new song to be added to the queue
+SONG_PICKED = 'song picked'
+
+#When sever acknowledges the picked song, and updates the song list
+#and user pick queue accordingly. This event contains the user queue update 
+USER_QUE_UPDATE = 'user queue update'
+
+#When client sends message periodically
+PING = 'ping'
+
+#when user pings server, emits this message
+PONG = 'pong'

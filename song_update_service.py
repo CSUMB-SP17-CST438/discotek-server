@@ -26,6 +26,7 @@ class SongQueue(PriorityQueue):
 		super(SongQueue,self).__init__()
 		self.current_priority = 0
 		self.least_priority = 0
+		self.last_picked_song = 1;
 
 	def fill(self,songlist):
 		for s in songlist:
@@ -44,7 +45,8 @@ class SongQueue(PriorityQueue):
 	def add_to_end(self,song):
 		self.put((self.least_priority,song))
 		self.least_priority+=1
-
+		if self.last_picked_song != 1:
+			self.last_picked_song-=1
 
 	def promote_priority(self,song):
 		#frees up spot for the song whose priotity will be changed
@@ -53,7 +55,6 @@ class SongQueue(PriorityQueue):
 			print(pri+1)
 			self.queue[i] = (pri+1), song2move
 		#inserts the promoted song to the next priority level and increase the current priority index
-
 		self.queue.insert(self.current_priority+1,((self.current_priority+1),song))
 		self.current_priority += 1
 		for i in range(self.current_priority+2,self.qsize()):
@@ -75,7 +76,14 @@ class SongQueue(PriorityQueue):
 
 	def update_pos(self,pos,song):
 		self.queue[pos] = song
-
+	
+	def update_song_queue(self,song_id):
+		song_to_swap = self.queue[self.last_picked_song]
+		for i in range(self.last_picked_song,self.qsize()):
+			if song_id == i['id']:
+				self.update_pos(self.last_picked_song,i)
+				i = song_to_swap
+				self.last_picked_song+=1
 
 class songUpdateThread(threading.Thread):
 	def __init__(self,thread_name,floor_id,songlist,socket):
@@ -95,6 +103,7 @@ class songUpdateThread(threading.Thread):
 
 	def run(self):
 		print("Starting thread..")
+		print("Thread Name: ",self.thread_name)
 		# self.send_updates()
 		self.songQ.fill(self.songlist)
 		self.queue_updates()
@@ -106,6 +115,7 @@ class songUpdateThread(threading.Thread):
 			while not self.songQ.empty():
 				if position == 0:
 					##start time 
+					print(self.thread_name)
 					self.start_time = math.floor(time.time() + 1)
 					print("init time: ",self.start_time)
 					#update initial song info
@@ -125,7 +135,7 @@ class songUpdateThread(threading.Thread):
 					# print("*****queue init emit****")
 					self.songlist = self.songQ.to_list()
 					# self.socket.emit(self.SLU_TAG,sl,room=self.floor_id)
-					print(json.dumps(self.songlist,indent=4))
+					print(json.dumps(self.songlist[0:4],indent=4))
 					# print("removing top two songs")
 					_,s = self.songQ.get()
 					self.songQ.add_to_end(s)
@@ -135,20 +145,21 @@ class songUpdateThread(threading.Thread):
 					# print(s)
 					position +=1
 				else:
-					time.sleep(self.sleep_duration-1)
+					time.sleep(self.sleep_duration)
 					#gets song at index 0
 					_song = self.songQ.peek()
 					#sets sleep duration to be the length of the song at index 0
 					self.sleep_duration = math.floor((_song['duration']/1000.0))
-					self.songQ.update_pos(0,(0,ds.refresh_song(_song,(self.start_time+2))))
+					self.songQ.update_pos(0,(0,ds.refresh_song(_song,(self.start_time+3))))
 					#update song on the next update
-					self.start_time = math.floor(self.start_time + self.sleep_duration+2)
+					self.start_time = math.floor(self.start_time + self.sleep_duration+3)
 					_song = self.songQ.peek_pos(1)
 					self.songQ.update_pos(1,(1,ds.refresh_song(_song,self.start_time)))
 					print("************************************************************************************************************")
 					print("*************************************************update emit****************************************************")
 					print("emit time:",self.start_time)
 					print("song",json.dumps(self.songQ.peek(),indent=4))
+					print("NAME:",self.name)
 					print("*****updated list*****")
 					self.songlist = self.songQ.to_list()
 					print(json.dumps(self.songlist[0:4],indent=4))
@@ -200,6 +211,7 @@ class SongThreadHolder:
 				if t.floor_id == floor_id:
 					t.stop()
 			print("KILLING THREAD...")
+			
 		else:
 			print(floor_id, " thread still active..")
 

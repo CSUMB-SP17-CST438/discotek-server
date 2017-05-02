@@ -245,6 +245,12 @@ def update_profile(data):
 	print(data)
 	me = update_profile(data)
 	socket.emit(events.PROFILE_UPDATED,me)
+	
+	
+@socket.on(events.PING)
+def on_ping(data):
+	s_id = request.sid
+	socket.emit(events.PONG, "keep me alive",room= s_id)
 
 #This event is for the privacy policy page
 @app.route('/privacy')
