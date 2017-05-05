@@ -8,6 +8,8 @@
 
 import sys
 
+DEBUG_MODE = False;
+
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
 OKGREEN = '\033[92m'
@@ -123,6 +125,8 @@ def get_box(box):
 # Turns a 2D array of strings into a string that is formatted into a box matrix like above
 # This is a FUCKING masterpiece.  I wrote it for the pure fun of it
 def get_boxf(box, text_format, box_format):
+	if DEBUG_MODE:
+		return getbox(box)
 	result = format('╔',box_format)
 
 	# First we have to get the sizes of each box
