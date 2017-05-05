@@ -247,6 +247,20 @@ def on_update_profile(data):
 	print(data)
 	me = update_profile(**data)
 	print("updated user: ",me)
+	for t in thread_holder.threads:
+		fl = getFloor(t.floor_id)
+		fl_id_found = None
+		for m in fl.floor_members:
+			if m.member_id == data['member_id']:
+				print("found!")
+				fl_id_found = fl.floor_id
+				break
+	if fl_id_found is not None:
+		socket.emit('floor joined', {'floor':fl.to_list()}, room=request.sid)
+		fl_list = fl.to_list()
+		socket.emit('member list update', {'floor members': fl_list['floor_members']},room=fl.floor_id)
+		
+		
 	socket.emit(events.PROFILE_UPDATED,me)
 	
 @socket.on(events.PING)
