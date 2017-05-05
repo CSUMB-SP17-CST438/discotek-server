@@ -72,8 +72,8 @@ def on_song_picked(data):
 def on_login(data):
 	log.sock(events.LOGIN)
 	if 'fb_t' not in data:
-		print('google_t: ')
-		print(data)
+		# print('google_t: ')
+		# print(data)
 		response = requests.get(
 			'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + data['google_t'])
 		json = response.json()
@@ -242,10 +242,10 @@ def get_floor_profiles(data):
 	
 @socket.on(events.PROFILE_UPDATE)
 def on_update_profile(data):
-	dt = data[0]
-	print(dt)
+	# dt = data[0]
+	print(data)
 	# print(data)
-	me = update_profile(**data)
+	# me = update_profile(**data)
 	socket.emit(events.PROFILE_UPDATED,me)
 	
 	
