@@ -6,6 +6,7 @@ import random
 import serv
 from schema import *	
 import time
+import json
 from song_update_service import * 
 from serv import socket
 
@@ -180,6 +181,42 @@ class sc_test(unittest.TestCase):
 	# 	flag2, sec_floor = add_floor("name1",1,True,"punk")
 	# 	print("result: ",flag2,sec_floor)
 	# 	self.assertEqual(flag2,False)
-
+	
+	def test_getMembers(self):
+		mems = getFloorMembers(1)
+		print(mems)
+		self.assertIsNotNone
+		
+	def test_squeue_to_list(self):
+		sl = ds.getSongList("punk rock")
+		slq = SongQueue(maxsize=0)
+		slq.fill(sl)
+		lq = slq.to_list()
+		print(json.dumps(lq,indent=4))
+		for i in range(0,10):
+			_,so = slq.get()
+			print("popped song: ",so['title'])
+			slq.add_to_end(so)
+			# lq = slq.to_list()
+			# print("last song: ",json.dumps(lq[-1:],indent=4))
+		lq = slq.to_list()
+		print("updated lq: ",json.dumps(lq,indent=4))
+		for i in range(0,10):
+			_,so = slq.get()
+			print("popped song: ",so['title'])
+			slq.add_to_end(so)
+		self.assertIsNotNone(lq)
+		
+		
+		
+	def test_update_profile(self):
+		boi = getMemberObject(1)
+		print("init member info: ",boi.to_simple_list())
+		data = {"member_id":1, "username":'johnnyboi1232',"f_name":'johnny boi'}
+		me = update_profile(**data)
+		print(me)
+		
+		self.assertIsNotNone(me)
+		
 if __name__ == '__main__':
     unittest.main()

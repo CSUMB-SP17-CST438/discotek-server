@@ -271,7 +271,7 @@ class floor_Schema_without_songlist(ma.Schema):
 
 class emailless_member(ma.Schema):
 	class Meta:
-		fields = ('username','member_FName','member_LName','member_img_url','created_floors'
+		fields = ('username','member_FName','member_LName','member_bio','member_img_url','created_floors'
 			)
 	created_floors = f.Nested(simple_floor_Schema,many=True, exclude=('floor_members'))
 
@@ -357,9 +357,11 @@ def update_profile(**kwargs):
 				for g in value:
 					#g should be the id of the genre 
 					me.add_genre(g)
-		return getMemberObject(kwargs['member_id']).to_list()
-
-	return None
+			db.session.add(me)
+			db.session.commit()
+		return getMemberObject(kwargs['member_id']).to_simple_list()
+	else: 
+		return None
 # ******************************************************************************************************
 # **************************************END INSERT MESSAGES*********************************************
 # ******************************************************************************************************

@@ -1,4 +1,5 @@
 Flask
+gunicorn ==18.0
 Flask-SocketIO
 Flask-SQLAlchemy
 psycopg2
