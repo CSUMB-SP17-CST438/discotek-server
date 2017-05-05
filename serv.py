@@ -230,7 +230,7 @@ def on_leave_floor(data):
 		thread_holder.update_thread_status(current_floor.floor_id,current_floor.isActive())
 
 def userEmit(member):
-	return {'authorized': 1,'email': member.member_email,'member_id':member.member_id, 'user':member.to_simple_list()}
+	return {'authorized': 1,'email': member.member_email,'member_id':member.member_id,'user':member.to_simple_list()}
 
 
 ###################################################################################################################################
@@ -241,9 +241,10 @@ def get_floor_profiles(data):
 	floor = data['floor_id']
 	
 @socket.on(events.PROFILE_UPDATE)
-def update_profile(data):
-	print(data)
-	me = update_profile(data)
+def on_update_profile(data):
+	dt = data[0]
+	# print(data)
+	me = update_profile(**data)
 	socket.emit(events.PROFILE_UPDATED,me)
 	
 	
