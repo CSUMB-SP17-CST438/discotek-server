@@ -243,6 +243,7 @@ def get_floor_profiles(data):
 @socket.on(events.PROFILE_UPDATE)
 def on_update_profile(data):
 	dt = data[0]
+	print(dt)
 	# print(data)
 	me = update_profile(**data)
 	socket.emit(events.PROFILE_UPDATED,me)
