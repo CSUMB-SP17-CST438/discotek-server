@@ -230,6 +230,7 @@ def on_leave_floor(data):
 		thread_holder.update_thread_status(current_floor.floor_id,current_floor.isActive())
 
 def userEmit(member):
+	print(member.to_simple_list())
 	return {'authorized': 1,'email': member.member_email,'member_id':member.member_id,'user':member.to_simple_list()}
 
 
@@ -244,10 +245,9 @@ def get_floor_profiles(data):
 def on_update_profile(data):
 	# dt = data[0]
 	print(data)
-	# print(data)
-	# me = update_profile(**data)
+	me = update_profile(**data)
+	print("updated user: ",me)
 	socket.emit(events.PROFILE_UPDATED,me)
-	
 	
 @socket.on(events.PING)
 def on_ping(data):

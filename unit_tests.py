@@ -212,10 +212,9 @@ class sc_test(unittest.TestCase):
 	def test_update_profile(self):
 		boi = getMemberObject(1)
 		print("init member info: ",boi.to_simple_list())
-		data = {"member_id":1, "username":'johnnyboi1232',"f_name":'johnny boi'}
+		data = {"member_id":1, "username":'DISboi1232',"f_name":'johnny boi', 'l_name': "HOTBOIIII"}
 		me = update_profile(**data)
 		print(me)
-		
 		self.assertIsNotNone(me)
 		
 if __name__ == '__main__':
