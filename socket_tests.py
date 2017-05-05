@@ -41,26 +41,38 @@ class SocketioTestCases(unittest.TestCase):
     #     # print(song)
     #     self.assertIsNone(None)
 
-    def test_leave_floor(self):
+    # def test_leave_floor(self):
+    #     db.app = serv.app 
+    #     client = serv.socket.test_client(serv.app)
+    #     client2 = serv.socket.test_client(serv.app)
+    #     ran = random.randint(1,2333)
+    #     print("**************************test_join_floor***********")
+    #     new_mem = registerMember("fname","lname",("email" + str(ran)+"@.com"),"img")
+        
+    #     client.emit('join floor',{'floor_id':1, 'member_id':new_mem.member_id})
+    #     r = client.get_received()
+    #     print("r:",json.dumps(r,indent=4))
+    #     time.sleep(10)
+    #     # song = r[0]['args'][0]['floor']['songlist'][0]['stream_url']
+    #     print("***************leave floor*****************")
+    #     client.emit('leave floor',{'floor_id':1,'member_id':new_mem.member_id})
+    #     rep2 = client.get_received()
+    #     print(json.dumps(rep2,indent=4))
+    #     # print(song)
+    #     self.assertIsNone(None)
+
+    def test_update_prof(self):
         db.app = serv.app 
         client = serv.socket.test_client(serv.app)
-        client2 = serv.socket.test_client(serv.app)
-        ran = random.randint(1,2333)
-        print("**************************test_join_floor***********")
-        new_mem = registerMember("fname","lname",("email" + str(ran)+"@.com"),"img")
-        
-        client.emit('join floor',{'floor_id':1, 'member_id':new_mem.member_id})
+        client.emit('join floor',{'floor_id':1, 'member_id':1})
         r = client.get_received()
         print("r:",json.dumps(r,indent=4))
         time.sleep(10)
-        # song = r[0]['args'][0]['floor']['songlist'][0]['stream_url']
-        print("***************leave floor*****************")
-        client.emit('leave floor',{'floor_id':1,'member_id':new_mem.member_id})
-        rep2 = client.get_received()
-        print(json.dumps(rep2,indent=4))
+        client.emit("update profile", {"member_id":1, "username":'DISboi1232',"f_name":'johnny boi', 'l_name': "HOTBOIIII"})
         # print(song)
+        r2 = client.get_received()
+        print(r[0])
         self.assertIsNone(None)
-
         
 
     

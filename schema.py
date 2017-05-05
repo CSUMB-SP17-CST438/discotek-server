@@ -160,7 +160,7 @@ class member(db.Model):
 		self.member_img_url = imgLink
 		self.member_bio = bio
 	
-	def add_genre(genre_id):
+	def add_genre(self,genre_id):
 		genre_to_add = getGenreObject(genre_id)
 		if genre_to_add not in self.member_fgenres:
 			print("genre: ",g," added")
@@ -344,6 +344,7 @@ def floor_name_taken(name):
 def update_profile(**kwargs):
 	if kwargs is not None and 'member_id' in kwargs:
 		me = getMemberObject(kwargs['member_id'])
+		print(me)
 		for key, value in kwargs.items():
 			if key == 'username':
 				me.username = value
@@ -355,7 +356,8 @@ def update_profile(**kwargs):
 				me.member_bio = value
 			if key == 'genres':
 				for g in value:
-					#g should be the id of the genre 
+					#g should be the name of the genre 
+					g = genre.query.filter_by(genre_name=g).first()
 					me.add_genre(g)
 			db.session.add(me)
 			db.session.commit()
@@ -421,7 +423,9 @@ def getPublicFloors():
 		fl_list.append(simple_schema.dump(f).data)
 	return fl_list
 
-
+def getGenreObject(gname):
+	g = genre.query.filter_by(genre_name=gname).first()
+	return g
 
 
 """*************************************************************************************************************************************
