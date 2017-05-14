@@ -126,7 +126,7 @@ def get_box(box):
 # This is a FUCKING masterpiece.  I wrote it for the pure fun of it
 def get_boxf(box, text_format, box_format):
 	if DEBUG_MODE:
-		return getbox(box)
+		return get_box(box)
 	result = format('╔',box_format)
 
 	# First we have to get the sizes of each box
