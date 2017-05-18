@@ -7,8 +7,8 @@
 #╚════════════╧══════════════════════════════════════╝
 
 import sys
-
-DEBUG_MODE = False;
+from config import *
+from enum import ENUM
 
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
@@ -29,6 +29,8 @@ def remove_formats(string):
 # Formats a string for the terminal, format options are above
 # returns a string
 def format(string, f):
+	if not COLORED_LOG_MESSAGES:
+		return string
 	return f + string + ENDC
 
 def count_lines(string):
@@ -106,9 +108,7 @@ def get_box(box):
 				if j == (len(x) - 1):
 					result += ('║\n')
 				else:
-					result += ('│')			
-			
-				
+					result += ('│')
 
 		# now print the bottom part of the table
 		if i == (len(box) - 1):
@@ -125,7 +125,7 @@ def get_box(box):
 # Turns a 2D array of strings into a string that is formatted into a box matrix like above
 # This is a FUCKING masterpiece.  I wrote it for the pure fun of it
 def get_boxf(box, text_format, box_format):
-	if DEBUG_MODE:
+	if not COLORED_LOG_MESSAGES:
 		return get_box(box)
 	result = format('╔',box_format)
 
@@ -226,37 +226,58 @@ def rect(string):
 
 # Formats a string and prints it inside a box
 def rectf(string , f):
+	if not COLORED_LOG_MESSAGES:
+		return rect(string)
 	return rect(format(string, f))
 
+class Level(enum):
+	INFO=1
+	DEBUG=2
+	SOCKET_IN=3
+	SOCKET_OUT=4
+	WARNING=5
+	ERROR=6
+	
+DEBUG_FORMATTING = BOLD
+	
+def log(level, tag, event):
+	if not isinstance(level, Level):
+		log(Level.ERROR, "Logger","Param 'level' was not an instance of log.Level")
+	if COLORED_LOG_MESSAGES:
+		box_color = OKBLUE
+		text_format = BOLD
+		if Level.DEBUG == level:
+			box_color = OKGREEN
+		if Level.WARNING == level:
+			box_color = WARNING
+		if Level.ERROR == level:
+			box_color = FAIL;
+			
+		s_print(get_boxf([[level.name],[tag],[event]], text_format, box_color));
+	else:
+		s_print(level.name)
+		s_print(": ")
+		s_print(tag)
+		s_print(": ")
+		s_print(event)
+		
+	
 
-# For printing verbose info
-def i(event):
-	s_print(get_boxf([["INFO"],[event]], BOLD, OKBLUE))
+# Prints info about what the server is currently doing
+def i(tag, event):
+	log(Level.INFO, tag, event)
 
-# For printing debug info
-# I suppose we can define debug info as anything that doesn't need to be logged after it's done being tested
-def d(event):
-	s_print(get_boxf([["DEBUG"],[event]], BOLD, OKGREEN))
+# Prints info that is to be used during testing only
+def d(tag, event):
+	log(Level.DEBUG, tag, event)
 
-# For printing warnings
-def w(event):
-	s_print(get_boxf([["WARNING"],[event]], FAIL + BOLD, WARNING))
+# Prints info about possible problems
+def w(tag, event):
+	log(Level.WARNING, tag, event)
 
-# For printing failures/errors
-def e(event):
-	s_print(get_boxf([[format("FAIL", MAGENTA)],[event]], FAIL + UNDERLINE + BOLD, FAIL))
-
-# For printing a socket EVENT
-def sock(event):
-	s_print(
-		get_boxf([["SOCKET EVENT RECIEVED"],[event]], BOLD + OKGREEN, CYAN)
-	)
-
-# For printing a socket EMIT
-def emit(event):
-	s_print(
-		get_boxf([["SOCKET EMIT"],[event]], BOLD + OKGREEN, MAGENTA)
-	)
+# Prints info about definite problems
+def e(tag, event):
+	log(Level.ERROR, tag, event)
 
 # same as map but with specific formatting
 def get_json(json):
@@ -274,6 +295,8 @@ def get_map(map):
 
 # Takes a dict object(like json) and prints it out in a table
 def get_mapf(map, text_format, box_format):
+	if not COLORED_LOG_MESSAGES:
+		return get_map(map)
 	b = []
 	for key, value in map.items():
 		b.append([key, value])

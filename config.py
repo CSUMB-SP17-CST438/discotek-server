@@ -1,1 +1,15 @@
 DEBUG_MODE = False
+
+BOXED_LOG_MESSAGES = True
+COLORED_LOG_MESSAGES = True
+LOG_INFO = True
+LOG_DEBUG = True
+LOG_WARNINGS = True
+# WE SHOULD ALWAYS LOG ERRORS, PROBABLY WARNINGS TOO
+
+# Settings to override when we are in "LIVE" mode, or deployed
+if not DEBUG_MODE:
+	LOG_DEBUG = False
+	# LOG_INFO = False
+	COLORED_LOG_MESSAGES = False
+	# BOXED_LOG_MESSAGES = False
